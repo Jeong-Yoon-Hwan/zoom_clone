@@ -12,15 +12,20 @@ app.get("/*", (_,res)=> res.redirect("/"))
 const handleListen = () => console.log(`Listening on http:localhost:3000`);
 
 const server = http.createServer(app);
-
 const wss = new WebSocket.Server({server});
 
+function onSocketClose() {
+    console.log("Disconnected from the Browser ❌")
+}
+
+function onSocketMessage(message){
+    console.log(message.toString());
+}
+    
 wss.on('connection', (socket)=>{
     console.log("Conneted to Browser✔");
-    socket.on('close',()=> console.log("Disconnected from the Browser ❌"))
-    socket.on('message',(message)=>{
-        console.log(message.toString());
-    })
+    socket.on('close',()=> onSocketClose);
+    socket.on('message',onSocketMessage);
     socket.send("hello!!!");
-})
+});
 server.listen(3000)
