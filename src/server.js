@@ -1,6 +1,7 @@
 import express from "express";
 import WebSocket from "ws";
 import http from "http";
+import { parse } from "path";
 
 const app  = express();
 app.set("view engine", "pug");
@@ -23,10 +24,17 @@ const socekts = [];
 // 웹소켓
 wss.on('connection', (socket)=>{
     socekts.push(socket);
+    socket["nickname"] = "Anon"
     console.log("Conneted to Browser✔");
     socket.on('close',()=> onSocketClose);
-    socket.on('message',(message)=>{
-        socekts.forEach((aSocket) => aSocket.send(message.toString()));
+    socket.on('message',(msg)=>{
+        const message = JSON.parse(msg.toString());
+        switch(message.type){
+            case "new_message":
+                socekts.forEach((aSocket) => aSocket.send(`${socket.nickname} : ${message.payload}`));
+            case "nickname":
+                socket["nickname"] = message.payload;
+        }
     });
    // socket.send("hello!!!");
 });
