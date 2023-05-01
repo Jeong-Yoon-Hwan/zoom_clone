@@ -20,6 +20,7 @@ function onSocketClose() {
 
 const socekts = [];
 
+// 웹소켓
 wss.on('connection', (socket)=>{
     socekts.push(socket);
     console.log("Conneted to Browser✔");
@@ -27,6 +28,6 @@ wss.on('connection', (socket)=>{
     socket.on('message',(message)=>{
         socekts.forEach((aSocket) => aSocket.send(message.toString()));
     });
-    socket.send("hello!!!");
+   // socket.send("hello!!!");
 });
-server.listen(3000)
+server.listen(3000,handleListen)
